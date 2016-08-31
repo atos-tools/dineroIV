@@ -88,6 +88,8 @@ d4new (d4cache *larger)
 		c->flags = D4F_MEM;
 		c->assoc = 1;	/* not used, but helps avoid compiler warnings */
 	}
+	c->cache_miss_handler = NULL;
+	c->cache_miss_handler_state = NULL;
 	c->link = d4_allcaches;
 	d4_allcaches = c;	/* d4customize depends on this LIFO order */
 	return c;

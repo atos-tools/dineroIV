@@ -818,6 +818,8 @@ d4ref (d4cache *c, d4memref mr)
 	 */
 	c->fetch[(int)m.accesstype]++;
 	if (miss) {
+		if (c->cache_miss_handler != NULL)
+			c->cache_miss_handler(c->cache_miss_handler_state);
 		c->miss[(int)m.accesstype]++;
 		if (blockmiss)
 			c->blockmiss[(int)m.accesstype]++;
