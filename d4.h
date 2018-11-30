@@ -211,9 +211,9 @@ typedef struct d4_cache_struct {
 	int lg2blocksize;	/* set by the user */
 	int lg2subblocksize;	/* set by the user */
 	int lg2size;		/* set by the user */
-	int assoc;		/* set by the user */
+	unsigned int assoc;	/* set by the user */
 
-	int numsets;		/* this one is derived, not set by the user */
+	unsigned int numsets;	/* this one is derived, not set by the user */
 
 	/*
 	 * Interconnection of caches
