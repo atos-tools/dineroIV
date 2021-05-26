@@ -272,11 +272,13 @@ fail2:	r++;
 fail1:	r++;
 
 	for (cc = d4_allcaches;  cc != c;  cc = cc->link) {
-		/* don't bother trying to deallocate c->name */
-		free (c->stack[0].top);
-		free (c->stack);
-		c->stack = NULL;
-		c->numsets = 0;
+		/* don't bother trying to deallocate cc->name */
+		if (cc->stack) {
+			free (cc->stack[0].top);
+			free (cc->stack);
+			cc->stack = NULL;
+			cc->numsets = 0;
+		}
 	}
 	d4nnodes = 0;
 	return r;
