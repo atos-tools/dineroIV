@@ -677,6 +677,7 @@ ac_subst_files=''
 ac_user_opts='
 enable_option_checking
 with_debug
+with_libc_random
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1304,7 +1305,8 @@ if test -n "$ac_init_help"; then
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
-  --with-debug                   enable debugging code in d4
+  --with-debug            enable debugging code in d4
+  --with-libc-random      use libc random instead of local version (legacy mode)
 
 Some influential environment variables:
   CC          C compiler command
@@ -4205,6 +4207,21 @@ if test "${with_debug+set}" = set; then :
 esac
 fi
 
+
+
+
+# Check whether --with-libc-random was given.
+if test "${with_libc_random+set}" = set; then :
+  withval=$with_libc_random; case "$withval" in
+  yes)	$as_echo "#define D4_LIBC_RANDOM 1" >>confdefs.h
+
+	;;
+  no)	:
+	;;
+  *)	as_fn_error $? "$withval makes no sense for --with-debug" "$LINENO" 5
+	;;
+esac
+fi
 
 
 ac_config_files="$ac_config_files Makefile"

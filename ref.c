@@ -82,9 +82,15 @@
 #include "d4.h"
 
 
+#ifdef D4_LIBC_RANDOM
 /* some systems don't provide a proper declaration for random() */
 #ifdef D4_RANDOM_DEF
 extern D4_RANDOM_DEF random(void);
+#endif
+#else
+static long int rnd_state = 1;
+#define minstd_rand() (rnd_state = (rnd_state * 48271) % 2147483647)
+#define random() minstd_rand()
 #endif
 
 
