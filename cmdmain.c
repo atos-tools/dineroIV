@@ -73,7 +73,7 @@ int optstringmax;			/* for help_* functions */
 d4cache *levcache[3][MAX_LEV];		/* to locate cache by level and type */
 d4cache *mem;				/* which cache represents simulated memory? */
 #if !D4CUSTOM
-const char **cust_argv;			/* for args to pass to custom version */
+char **cust_argv;			/* for args to pass to custom version */
 int cust_argc = 1;			/* how many args for custom version */
 char *customname;			/* for -custom, name of executable */
 #endif
@@ -113,9 +113,9 @@ do1arg (const char *opt, const char *arg)
 			adesc->valf (opt, arg, adesc);
 #if !D4CUSTOM
 			if (adesc->customf == NULL) {
-				cust_argv[cust_argc++] = opt;
+				cust_argv[cust_argc++] = strdup(opt);
 				if (eaten>1)
-					cust_argv[cust_argc++] = arg;
+					cust_argv[cust_argc++] = strdup(arg);
 			}
 #endif
 			return eaten;
@@ -1867,9 +1867,9 @@ customize_caches()
 		die ("can't make %s: %s returned %d\n", customname, cmdline, x);
 
 	/* exec customname using cust_argc, cust_argv */
-	cust_argv[0] = customname;
+	cust_argv[0] = strdup(customname);
 	cust_argv[cust_argc++] = NULL;
-	x = execv (customname, (char**)cust_argv); /* cast avoids warnings */
+	x = execv (customname, cust_argv);
 	die ("cannot exec custom version %s: %s\n", customname, strerror(x));
 }
 #endif	/* !D4CUSTOM */
