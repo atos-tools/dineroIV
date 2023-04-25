@@ -99,12 +99,14 @@ tracein_xdin()
 
 	/* the accesstype is just 1 char */
 	switch (c) {
-	default:
+	default: {
+		char __attribute__((unused)) *ptr;
 		errline[0] = c;
-		fgets (errline+1, sizeof(errline)-1, stdin);
+		ptr = fgets (errline+1, sizeof(errline)-1, stdin);
 		errline[strlen(errline)-1] = '\n'; /* ensure trailing \n */
 		die (badatype, tcount, errline);
 		/* no return */
+	}
 	case 'r':
 	case 'R':
 		atype = D4XREAD;
@@ -134,9 +136,10 @@ tracein_xdin()
 	if (cc == '\n')
 		die (shortline, tcount);
 	if (cc != ' ' && cc != '\t') {
+		char __attribute__((unused)) *ptr;
 		errline[0] = c;
 		errline[1] = cc;
-		fgets (errline+2, sizeof(errline)-2, stdin);
+		ptr = fgets (errline+2, sizeof(errline)-2, stdin);
 		errline[strlen(errline)-1] = '\n'; /* ensure trailing \n */
 		die (badatype, tcount, errline);
 	}
