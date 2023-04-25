@@ -70,7 +70,7 @@ l1-I/Dcaches
    DB compulsory misses	         452	          84	         368	          20	         345	           3
    DB capacity misses	        5317	           1	        5316	        5315	           1	           0
    DB conflict misses	       37289	           8	       37281	       35194	        2087	           0
-   DB compulsory fract	      0.0105	      0.9032	      0.0086	      0.0005	      0.1418	      3.0000
+   DB compulsory fract	      0.0105	      0.9032	      0.0086	      0.0005	      0.1418	      1.0000
    DB capacity fract	      0.1235	      0.0108	      0.1237	      0.1311	      0.0004	      0.0000
    DB conflict fract	      0.8660	      0.0860	      0.8677	      0.8684	      0.8578	      0.0000
  Prefetch Block Misses	        9747	         132	        9615	        9615	           0	           0

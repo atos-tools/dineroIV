@@ -41,31 +41,31 @@ l1-I/Dcaches
  -----------------	      ------	      ------	      ------	      ------	      ------	      ------
  Demand Fetches		      265775	      188971	       76804	       70370	        6426	           8
   Fraction of total	      1.0000	      0.7110	      0.2890	      0.2648	      0.0242	      0.0000
- Prefetch Fetches	      129968	       94777	       35191	       35191	           0	           0
-  Fraction		      1.0000	      0.7292	      0.2708	      0.2708	      0.0000	      0.0000
- Total Fetches		      395743	      283748	      111995	      105561	        6426	           8
-  Fraction		      1.0000	      0.7170	      0.2830	      0.2667	      0.0162	      0.0000
+ Prefetch Fetches	      129858	       94588	       35270	       35270	           0	           0
+  Fraction		      1.0000	      0.7284	      0.2716	      0.2716	      0.0000	      0.0000
+ Total Fetches		      395633	      283559	      112074	      105640	        6426	           8
+  Fraction		      1.0000	      0.7167	      0.2833	      0.2670	      0.0162	      0.0000
 
- Demand Misses		       53654	         239	       53415	       50522	        2890	           3
-  Demand miss rate	      0.2019	      0.0013	      0.6955	      0.7179	      0.4497	      0.3750
- Prefetch Misses	       28637	         438	       28199	       28199	           0	           0
-  PF miss rate		      0.2203	      0.0046	      0.8013	      0.8013	      0.0000	      0.0000
- Total Misses		       82291	         677	       81614	       78721	        2890	           3
-  Total miss rate	      0.2079	      0.0024	      0.7287	      0.7457	      0.4497	      0.3750
+ Demand Misses		       53591	         241	       53350	       50459	        2888	           3
+  Demand miss rate	      0.2016	      0.0013	      0.6946	      0.7171	      0.4494	      0.3750
+ Prefetch Misses	       28770	         435	       28335	       28335	           0	           0
+  PF miss rate		      0.2215	      0.0046	      0.8034	      0.8034	      0.0000	      0.0000
+ Total Misses		       82361	         676	       81685	       78794	        2888	           3
+  Total miss rate	      0.2082	      0.0024	      0.7288	      0.7459	      0.4494	      0.3750
 
  Demand Block Misses	       42195	         203	       41992	       39660	        2329	           3
   DB miss rate		      0.1588	      0.0011	      0.5467	      0.5636	      0.3624	      0.3750
  Prefetch Block Misses	           0	           0	           0	           0	           0	           0
   PFB miss rate		      0.0000	      0.0000	      0.0000	      0.0000	      0.0000	      0.0000
  Total Block Misses	       42195	         203	       41992	       39660	        2329	           3
-  Tot blk miss rate	      0.1066	      0.0007	      0.3749	      0.3757	      0.3624	      0.3750
+  Tot blk miss rate	      0.1067	      0.0007	      0.3747	      0.3754	      0.3624	      0.3750
 
  Multi-block refs                 0
- Bytes From Memory	     1316656
- ( / Demand Fetches)	      4.9540
+ Bytes From Memory	     1317776
+ ( / Demand Fetches)	      4.9582
  Bytes To Memory	       67984
  ( / Demand Writes)	     10.5795
- Total Bytes r/w Mem	     1384640
- ( / Demand Fetches)	      5.2098
+ Total Bytes r/w Mem	     1385760
+ ( / Demand Fetches)	      5.2140
 
 ---Execution complete.
