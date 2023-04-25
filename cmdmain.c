@@ -508,8 +508,8 @@ void
 pval_0arg (const char *opt, const char *arg, const struct arglist *adesc)
 {
 	int (*var)[3][MAX_LEV] = adesc->var;
-	int level;
-	int idu;
+	int level = 0;
+	int idu = 0;
 
 	(void) level_idu (opt, &level, &idu);
 	(*var)[idu][level] = 1;
@@ -540,8 +540,8 @@ pval_uint (const char *opt, const char *arg, const struct arglist *adesc)
 {
 	unsigned int (*var)[3][MAX_LEV] = adesc->var;
 	unsigned int argui;
-	int level;
-	int idu;
+	int level = 0;
+	int idu = 0;
 	char *nextc;
 
 	(void) level_idu (opt, &level, &idu);
@@ -586,8 +586,8 @@ pval_scale_uint (const char *opt, const char *arg, const struct arglist *adesc)
 {
 	unsigned int (*var)[3][MAX_LEV] = adesc->var;
 	unsigned int argui;
-	int level;
-	int idu;
+	int level = 0;
+	int idu = 0;
 
 	(void) level_idu (opt, &level, &idu);
 	if (!argscale_uint (arg, &argui))
@@ -623,8 +623,8 @@ pval_scale_pow2 (const char *opt, const char *arg, const struct arglist *adesc)
 {
 	unsigned int (*var)[3][MAX_LEV] = adesc->var;
 	unsigned int argui;
-	int level;
-	int idu;
+	int level = 0;
+	int idu = 0;
 
 	(void) level_idu (opt, &level, &idu);
 	if (!argscale_uint (arg, &argui))
@@ -656,8 +656,8 @@ void
 pval_char (const char *opt, const char *arg, const struct arglist *adesc)
 {
 	int (*var)[3][MAX_LEV] = adesc->var;
-	int level;
-	int idu;
+	int level = 0;
+	int idu = 0;
 
 	(void) level_idu (opt, &level, &idu);
 	if (strlen (arg) != 1)
