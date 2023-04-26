@@ -1,0 +1,13 @@
+r 0x1000 4  # comment for lru policy on a single set
+r 0x2000 4  # with size 32 k, bsize 64 and assoc 8
+r 0x3000 4
+r 0x4000 4
+r 0x5000 4
+r 0x6000 4
+r 0x7000 4
+r 0x8000 4  # invalid misses up to there
+r 0x9000 4  # miss, replace 0x1000
+r 0x8000 4  # hit
+r 0x1000 4  # miss, replace 0x2000
+r 0x2000 4  # miss, replace 0x3000
+r 0x4000 4  # hit

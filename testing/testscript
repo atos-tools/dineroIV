@@ -14,7 +14,7 @@
 dir=`dirname "$0"`
 
 PARAM_FILE=test-parms
-INPUT_FILES="mm.32 mm.64"
+INPUT_FILES="mm.32 mm.64 simple.32.txt"
 
 usage="Usage: `basename $0` [-r] [-t param_tags] [-i input_files]"
 tag_patterns='.*'	# default: match any tag
@@ -87,34 +87,42 @@ done | while read tag parms; do
 		parms="-custom $custfile $parms"
 	fi
 	for i in $INPUT_FILES; do
+	        case "$i" in
+		    *.64) inf=64;;
+		    *.32) inf=32;;
+		    *.d.txt) inf=d;;
+		    *.txt) inf=D;;
+		esac
 		p2d=./p2d
 		oktodo=yes
 		case "$tag" in
 		'#'|'')	# comment and blank lines
 			oktodo=no;;
 		*p)	# 32-bit pixie input format
-			case $i in
-			*.64)	oktodo=no;;	# skip this input file
+			case $inf in
+			64|D|d)	oktodo=no;;	# skip this input file
 			esac
 			p2d=cat;;
 		*P)	# 64-bit pixie input format
-			case $i in
-			*.32)	oktodo=no;;	# skip this input file
+			case $inf in
+			32|D|d)	oktodo=no;;	# skip this input file
 			esac
 			p2d=cat;;
 		*b)	# convert to binary format
-			case $i in
-			*.64)	oktodo=no;;	# skip this input file
+			case $inf in
+			64|D|d)	oktodo=no;;	# skip this input file
 			esac
 			p2d=./p2b;;
 		*D)	# convert to extended din format
-			case $i in
-			*.64)	oktodo=no;;	# skip this input file
-			esac
-			p2d="./p2d -4";;
+			case $inf in
+			64|d)	oktodo=no;;	# skip this input file
+			D) p2d=cat;;
+			*) p2d="./p2d -4";;
+			esac;;
 		*)	# original ascii dinero input format
-			case $i in
-			*.64)	oktodo=no;;	# skip this input file
+			case $inf in
+			64|D)	oktodo=no;;	# skip this input file
+			d) p2d=cat;;
 			esac;;
 		esac
 

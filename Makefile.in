@@ -60,7 +60,7 @@ prefix = @prefix@
 SHELL = /bin/sh
 @SET_MAKE@
 
-LIB_OBJ_LIST = ref.o misc.o
+LIB_OBJ_LIST = ref.o misc.o plru.o
 CMD_OBJ_LIST = cmdmain.o cmdargs.o tracein.o \
 	xdinfmt.o dinfmt.o binaryfmt.o pixie32fmt.o pixie64fmt.o
 
@@ -73,8 +73,11 @@ CUSTOM_SRC_LIST = $(CMD_SRC_LIST:%=$(D4_SRC)/%)
 CUSTOM_NAME = d4custom # this is really just a placeholder
 
 LIB_SO_OBJ_LIST = ref.pic.o misc.pic.o cmdmain.pic.o cmdargs.pic.o tracein.pic.o \
-	xdinfmt.pic.o dinfmt.pic.o binaryfmt.pic.o pixie32fmt.pic.o pixie64fmt.pic.o
+	xdinfmt.pic.o dinfmt.pic.o binaryfmt.pic.o pixie32fmt.pic.o pixie64fmt.pic.o plru.pic.o
 D4_SO = $(D4_BLD)/libd4.so
+
+TEST_PLRU_OBJ_LIST = plru.test.o
+TEST_OBJ_LIST = $(TEST_PLRU_OBJ_LIST)
 
 CC = @CC@
 DEBUG=@D4_DEBUG_FLAGS@
@@ -92,18 +95,19 @@ DISTCLEAN_SUBDIRS=$(SUBDIRS:%=distclean-%)
 
 all: libd4.a libd4.so dineroIV all-units all-testing
 
-all-units:
+all-units: test-plru
 
 check-units: all-units
+	./test-plru
 
 check: all
 	$(MAKE) check-units check-testing
 
 clean: clean-testing
-	rm -f $(LIB_OBJ_LIST) $(LIB_SO_OBJ_LIST) $(CMD_OBJ_LIST)
+	rm -f $(LIB_OBJ_LIST) $(LIB_SO_OBJ_LIST) $(CMD_OBJ_LIST) $(TEST_OBJ_LIST)
 
 clobber: clobber-testing clean
-	rm -f libd4.a libd4.so dineroIV d4custom
+	rm -f libd4.a libd4.so dineroIV d4custom test-plru
 
 distclean: distclean-testing clobber
 	rm -f config.status config.cache config.log Makefile config.h core
@@ -116,8 +120,12 @@ libd4.a: $(LIB_OBJ_LIST)
 libd4.so: $(LIB_SO_OBJ_LIST)
 	$(CC) $(CFLAGS) --shared -o $@ $(LIB_SO_OBJ_LIST) $(LDFLAGS) $(LIBS)
 
-dineroIV: $(CMD_OBJ_LIST) libd4.a d4.h
-	$(CC) $(CFLAGS) -o dineroIV $(CMD_OBJ_LIST) libd4.a $(LIBS)
+dineroIV: $(CMD_OBJ_LIST) libd4.a
+	$(CC) $(CFLAGS) -o dineroIV $(CMD_OBJ_LIST) libd4.a $(LDFLAGS) $(LIBS)
+
+test-plru: $(TEST_PLRU_OBJ_LIST)
+	$(CC) $(CFLAGS) -o $@ $(TEST_PLRU_OBJ_LIST) $(LDFLAGS) $(LIBS)
+
 
 # don't include $(D4_LIB) on next line; a custom make should not rebuild it
 $(CUSTOM_NAME): $(D4_HDR_LIST)
@@ -160,6 +168,7 @@ $(DISTCLEAN_SUBDIRS): distclean-%:
 
 ref.o ref.pic.o: d4.h config.h
 misc.o misc.pic.o: d4.h config.h
+plru.o plru.pic.o plru.test.o: d4.h config.h
 cmdmain.o cmdmain.pic.o: d4.h cmdd4.h cmdargs.h tracein.h config.h
 cmdargs.o cmdargs.pic.o: d4.h cmdd4.h cmdargs.h config.h
 tracein.o tracein.pic.o: d4.h tracein.h config.h
@@ -174,3 +183,6 @@ $(LIB_OBJ_LIST) $(CMD_OBJ_LIST): %.o: %.c
 
 $(LIB_SO_OBJ_LIST): %.pic.o: %.c
 	$(CC) $(CFLAGS) -fPIC -c -o $@ $<
+
+$(TEST_OBJ_LIST): %.test.o: %.c
+	$(CC) $(CFLAGS) -DTEST_PLRU -c -o $@ $<
