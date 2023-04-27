@@ -63,6 +63,10 @@ CMD_SRC_LIST = $(D4_SRC)/cmdmain.c $(D4_SRC)/cmdargs.c $(D4_SRC)/tracein.c \
 	$(D4_SRC)/pixie32fmt.c $(D4_SRC)/pixie64fmt.c
 CUSTOM_NAME = d4custom # this is really just a placeholder
 
+LIB_SO_OBJ_LIST = ref.pic.o misc.pic.o cmdmain.pic.o cmdargs.pic.o tracein.pic.o \
+	xdinfmt.pic.o dinfmt.pic.o binaryfmt.pic.o pixie32fmt.pic.o pixie64fmt.pic.o
+D4_SO = $(D4_SRC)/libd4.so
+
 CC = @CC@
 DEBUG=@D4_DEBUG_FLAGS@
 CFLAGS = @CFLAGS@ $(DEBUG) -I$(D4_SRC)
@@ -70,13 +74,13 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 RANLIB = @RANLIB@
 
-all: libd4.a dineroIV
+all: libd4.a libd4.so dineroIV
 
 clean:
-	rm -f $(LIB_OBJ_LIST) $(CMD_OBJ_LIST)
+	rm -f $(LIB_OBJ_LIST) $(LIB_SO_OBJ_LIST) $(CMD_OBJ_LIST)
 
 clobber: clean
-	rm -f libd4.a dineroIV d4custom
+	rm -f libd4.a libd4.so dineroIV d4custom
 
 distclean: clobber
 	rm -f config.status config.cache config.log Makefile config.h core
@@ -85,6 +89,9 @@ libd4.a: $(LIB_OBJ_LIST)
 	rm -f libd4.a
 	$(AR) cq libd4.a $(LIB_OBJ_LIST)
 	$(RANLIB) libd4.a
+
+libd4.so: $(LIB_SO_OBJ_LIST)
+	$(CC) $(CFLAGS) --shared -o $@ $(LIB_SO_OBJ_LIST) $(LDFLAGS) $(LIBS)
 
 dineroIV: $(CMD_OBJ_LIST) libd4.a d4.h
 	$(CC) $(CFLAGS) -o dineroIV $(CMD_OBJ_LIST) libd4.a $(LIBS)
@@ -104,3 +111,7 @@ dinfmt.o: dinfmt.c d4.h cmdd4.h tracein.h config.h
 binaryfmt.o: binaryfmt.c d4.h cmdd4.h tracein.h config.h
 pixie32fmt.o: pixie32fmt.c d4.h cmdd4.h tracein.h config.h
 pixie64fmt.o: pixie64fmt.c d4.h cmdd4.h tracein.h config.h
+
+$(LIB_SO_OBJ_LIST): d4.h config.h
+$(LIB_SO_OBJ_LIST): %.pic.o: %.c
+	$(CC) $(CFLAGS) -fPIC -c -o $@ $*.c
