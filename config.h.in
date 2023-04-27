@@ -19,5 +19,14 @@
 /* The number of bytes in a short.  */
 #undef SIZEOF_SHORT
 
+/* The number of bytes in a long.  */
+#undef SIZEOF_LONG
+
+/* The number of bytes in a void*.  */
+#undef SIZEOF_VOIDP
+
 /* type for random, if not defined in stdlib.h */
 #undef D4_RANDOM_DEF
+
+/* If defined, use libc random() instead of local version (as in legacy sources) */
+#undef D4_LIBC_RANDOM

@@ -32,15 +32,15 @@ l1-ucache
  Demand Fetches		      265775	      188971	       76804	       70370	        6426	           8
   Fraction of total	      1.0000	      0.7110	      0.2890	      0.2648	      0.0242	      0.0000
 
- Demand Misses		        8890	         998	        7892	        6767	        1122	           3
-  Demand miss rate	      0.0334	      0.0053	      0.1028	      0.0962	      0.1746	      0.3750
+ Demand Misses		        8860	         979	        7881	        6761	        1116	           4
+  Demand miss rate	      0.0333	      0.0052	      0.1026	      0.0961	      0.1737	      0.5000
 
  Multi-block refs                 0
- Bytes From Memory	      142240
- ( / Demand Fetches)	      0.5352
- Bytes To Memory	       40912
- ( / Demand Writes)	      6.3666
- Total Bytes r/w Mem	      183152
- ( / Demand Fetches)	      0.6891
+ Bytes From Memory	      141760
+ ( / Demand Fetches)	      0.5334
+ Bytes To Memory	       40640
+ ( / Demand Writes)	      6.3243
+ Total Bytes r/w Mem	      182400
+ ( / Demand Fetches)	      0.6863
 
 ---Execution complete.

@@ -73,7 +73,7 @@ int optstringmax;			/* for help_* functions */
 d4cache *levcache[3][MAX_LEV];		/* to locate cache by level and type */
 d4cache *mem;				/* which cache represents simulated memory? */
 #if !D4CUSTOM
-const char **cust_argv;			/* for args to pass to custom version */
+char **cust_argv;			/* for args to pass to custom version */
 int cust_argc = 1;			/* how many args for custom version */
 char *customname;			/* for -custom, name of executable */
 #endif
@@ -113,9 +113,9 @@ do1arg (const char *opt, const char *arg)
 			adesc->valf (opt, arg, adesc);
 #if !D4CUSTOM
 			if (adesc->customf == NULL) {
-				cust_argv[cust_argc++] = opt;
+				cust_argv[cust_argc++] = strdup(opt);
 				if (eaten>1)
-					cust_argv[cust_argc++] = arg;
+					cust_argv[cust_argc++] = strdup(arg);
 			}
 #endif
 			return eaten;
@@ -508,8 +508,8 @@ void
 pval_0arg (const char *opt, const char *arg, const struct arglist *adesc)
 {
 	int (*var)[3][MAX_LEV] = adesc->var;
-	int level;
-	int idu;
+	int level = 0;
+	int idu = 0;
 
 	(void) level_idu (opt, &level, &idu);
 	(*var)[idu][level] = 1;
@@ -540,8 +540,8 @@ pval_uint (const char *opt, const char *arg, const struct arglist *adesc)
 {
 	unsigned int (*var)[3][MAX_LEV] = adesc->var;
 	unsigned int argui;
-	int level;
-	int idu;
+	int level = 0;
+	int idu = 0;
 	char *nextc;
 
 	(void) level_idu (opt, &level, &idu);
@@ -586,8 +586,8 @@ pval_scale_uint (const char *opt, const char *arg, const struct arglist *adesc)
 {
 	unsigned int (*var)[3][MAX_LEV] = adesc->var;
 	unsigned int argui;
-	int level;
-	int idu;
+	int level = 0;
+	int idu = 0;
 
 	(void) level_idu (opt, &level, &idu);
 	if (!argscale_uint (arg, &argui))
@@ -623,8 +623,8 @@ pval_scale_pow2 (const char *opt, const char *arg, const struct arglist *adesc)
 {
 	unsigned int (*var)[3][MAX_LEV] = adesc->var;
 	unsigned int argui;
-	int level;
-	int idu;
+	int level = 0;
+	int idu = 0;
 
 	(void) level_idu (opt, &level, &idu);
 	if (!argscale_uint (arg, &argui))
@@ -656,8 +656,8 @@ void
 pval_char (const char *opt, const char *arg, const struct arglist *adesc)
 {
 	int (*var)[3][MAX_LEV] = adesc->var;
-	int level;
-	int idu;
+	int level = 0;
+	int idu = 0;
 
 	(void) level_idu (opt, &level, &idu);
 	if (strlen (arg) != 1)
@@ -1538,7 +1538,7 @@ do1stats (d4cache *c)
 				demand_comp_data / NONZERO(demand_data),
 				c->comp_blockmiss[D4XREAD] / NONZERO(c->blockmiss[D4XREAD]),
 				c->comp_blockmiss[D4XWRITE] / NONZERO(c->blockmiss[D4XWRITE]),
-				c->comp_blockmiss[D4XMISC]) / NONZERO(c->blockmiss[D4XMISC]);
+				c->comp_blockmiss[D4XMISC] / NONZERO(c->blockmiss[D4XMISC]));
 
 			printf(	"   DB capacity fract	%12.4f	%12.4f	%12.4f	%12.4f	%12.4f	%12.4f\n",
 				demand_cap_alltype / NONZERO(demand_alltype),
@@ -1867,9 +1867,9 @@ customize_caches()
 		die ("can't make %s: %s returned %d\n", customname, cmdline, x);
 
 	/* exec customname using cust_argc, cust_argv */
-	cust_argv[0] = customname;
+	cust_argv[0] = strdup(customname);
 	cust_argv[cust_argc++] = NULL;
-	x = execv (customname, (char**)cust_argv); /* cast avoids warnings */
+	x = execv (customname, cust_argv);
 	die ("cannot exec custom version %s: %s\n", customname, strerror(x));
 }
 #endif	/* !D4CUSTOM */

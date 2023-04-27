@@ -75,7 +75,7 @@ AC_PROG_MAKE_SET
 dnl compile debugging code by using --with-debug
 D4_DEBUG_FLAGS=-DNDEBUG
 AC_ARG_WITH(debug,
-[  --with-debug                   enable debugging code in d4],
+[  --with-debug            enable debugging code in d4],
 [case "$withval" in
   yes)	D4_DEBUG_FLAGS=
 	;;
@@ -85,5 +85,17 @@ AC_ARG_WITH(debug,
 	;;
 esac])
 AC_SUBST(D4_DEBUG_FLAGS)
+
+dnl use local random generator by default unless --with-libc-random
+AC_ARG_WITH(libc-random,
+[  --with-libc-random      use libc random instead of local version (legacy mode)],
+[case "$withval" in
+  yes)	AC_DEFINE(D4_LIBC_RANDOM,1)
+	;;
+  no)	:
+	;;
+  *)	AC_MSG_ERROR($withval makes no sense for --with-debug)
+	;;
+esac])
 
 AC_OUTPUT(Makefile)
