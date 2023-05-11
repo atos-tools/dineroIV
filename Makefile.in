@@ -69,7 +69,7 @@ D4_SO = $(D4_SRC)/libd4.so
 
 CC = @CC@
 DEBUG=@D4_DEBUG_FLAGS@
-CFLAGS = @CFLAGS@ $(DEBUG) -I$(D4_SRC)
+CFLAGS = @CFLAGS@ $(DEBUG) -I. -I$(D4_SRC)
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 RANLIB = @RANLIB@
@@ -101,6 +101,20 @@ $(CUSTOM_NAME): $(CUSTOM_C) $(CMD_SRC_LIST) $(D4_SRC)/d4.h $(D4_SRC)/config.h
 	$(CC) $(CFLAGS) -DD4CUSTOM -o $(CUSTOM_NAME) \
 		$(CUSTOM_C) $(CMD_SRC_LIST) $(D4_LIB) $(LIBS)
 
+install: install-bin install-lib install-so
+
+install-bin:
+	install -m 0755 -d $(prefix)/bin
+	install -m 0755 dineroIV $(prefix)/bin
+
+install-lib:
+	install -m 0755 -d $(prefix)/lib
+	install -m 0644 libd4.a $(prefix)/lib
+
+install-so:
+	install -m 0755 -d $(prefix)/lib
+	install -m 0755 libd4.so $(prefix)/lib
+
 ref.o ref.pic.o: d4.h config.h
 misc.o misc.pic.o: d4.h config.h
 cmdmain.o cmdmain.pic.o: d4.h cmdd4.h cmdargs.h tracein.h config.h
@@ -113,8 +127,7 @@ pixie32fmt.o pixie32fmt.pic.o: d4.h cmdd4.h tracein.h config.h
 pixie64fmt.o pixie64fmt.pic.o: d4.h cmdd4.h tracein.h config.h
 
 $(LIB_OBJ_LIST) $(CMD_OBJ_LIST): %.o: %.c
-	$(CC) $(CFLAGS) -c -o $@ $*.c
+	$(CC) $(CFLAGS) -c -o $@ $<
 
-$(LIB_SO_OBJ_LIST): d4.h config.h
 $(LIB_SO_OBJ_LIST): %.pic.o: %.c
-	$(CC) $(CFLAGS) -fPIC -c -o $@ $*.c
+	$(CC) $(CFLAGS) -fPIC -c -o $@ $<
