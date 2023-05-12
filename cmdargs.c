@@ -168,8 +168,8 @@ struct arglist args[] = {
 	{ "size", 7, &level_size[0][0], NULL,
 	  "level_size",
 	  "Size",
-	  CUST_MATCH(pmatch_1arg), pval_scale_pow2, CUST_X(pcustom_uint),
-	  psummary_luint, CUST_X(phelp_scale_pow2) },
+	  CUST_MATCH(pmatch_1arg), pval_scale_uint, CUST_X(pcustom_uint),
+	  psummary_uint, CUST_X(phelp_scale_uint) },
 	{ "bsize", 7, &level_blocksize[0][0], NULL,
 	  "level_blocksize",
 	  "Block size",
@@ -595,7 +595,7 @@ init_1cache (d4cache *c, int lev, int idu)
 		c->flags |= D4F_RO;
 	c->lg2blocksize = clog2 (level_blocksize[idu][lev]);
 	c->lg2subblocksize = clog2 (level_subblocksize[idu][lev]);
-	c->lg2size = clog2 (level_size[idu][lev]);
+	c->size = level_size[idu][lev];
 	c->assoc = level_assoc[idu][lev];
 
 	switch (level_replacement[idu][lev]) {
