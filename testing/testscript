@@ -11,6 +11,8 @@
 #	-ttag	specify tag
 #	-iinp	specify test input
 
+dir=`dirname "$0"`
+
 PARAM_FILE=test-parms
 INPUT_FILES="mm.32 mm.64"
 
@@ -65,8 +67,8 @@ while [ $# -gt 0 ]; do
 done
 
 for i in $INPUT_FILES; do
-	if [ ! -r "$i" ]; then
-		echo `basename $0`: "$i" not found 1>&2
+	if [ ! -r "$dir/$i" ]; then
+		echo `basename $0`: "$dir/$i" not found 1>&2
 		exit 2
 	fi
 done
@@ -79,7 +81,7 @@ fi
 
 # try each test input with a bunch of test parameters
 for tp in "$tag_patterns"; do
-	grep "^$tp[ 	]" $PARAM_FILE
+	grep "^$tp[ 	]" "$dir"/$PARAM_FILE
 done | while read tag parms; do
 	if [ $docustom = yes ]; then
 		parms="-custom $custfile $parms"
@@ -117,13 +119,13 @@ done | while read tag parms; do
 		esac
 
 		if [ $oktodo = yes ]; then
-		 cat $i | $p2d | dineroIV $parms | sed 's/version [0-9]*$/version XXX/' |
-		  if [ $action = diff -a -s $i.good.$tag ]; then
-			echo ================== `date` ==== diff with $i.good.$tag for $parms
-			diff -b $i.good.$tag -
+		 cat "$dir"/$i | $p2d | dineroIV $parms | sed 's/version [0-9]*$/version XXX/' |
+		  if [ $action = diff -a -s "$dir"/$i.good.$tag ]; then
+			echo ================== `date` ==== diff with "$dir"/$i.good.$tag for $parms
+			diff -b "$dir"/$i.good.$tag -
 		  else
-			echo ================== `date` ==== creating $i.good.$tag for $parms
-			cat >$i.good.$tag
+			echo ================== `date` ==== creating "$dir"/$i.good.$tag for $parms
+			cat >"$dir"/$i.good.$tag
 		  fi
 		fi
 		if [ -n "$custfile" ]; then

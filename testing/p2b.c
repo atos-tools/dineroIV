@@ -56,6 +56,7 @@
 #include <unistd.h>
 #include <limits.h>
 #include <stdio.h>
+#include <assert.h>
 
 #if UINT_MAX < 0xffffffff
 #error "unsigned int is < 32 bits"
@@ -121,7 +122,7 @@ static int optr;
 #error "BUFSIZ is way too small"
 #endif
 
-void
+static void
 out(unsigned long addr, char atype, char size)
 {
 	if (addr == endaddr && addr != 0)
@@ -136,7 +137,8 @@ out(unsigned long addr, char atype, char size)
 		obuf[optr++] = atype;
 		obuf[optr++] = 0; /* padding */
 		if (optr > BUFSIZ - RECORD_SIZE) {
-			(void) write (1, obuf, optr);
+			int __attribute__((unused)) n = write (1, obuf, optr);
+			assert(n == optr);
 			optr = 0;
 		}
 	}
@@ -154,7 +156,6 @@ main (int argc, char **argv)
 	unsigned long iaddr = ~0;	/* current instr address */
 	unsigned int reftype, count;	/* from pixie */
 	unsigned int c;			/* iterator for ifetching */
-	unsigned int icnt, dcnt;
 	extern int optind;
 	extern char *optarg;
 
@@ -179,8 +180,6 @@ main (int argc, char **argv)
 		if (beginaddr != 0)
 			discard = 1;
 	}
-	icnt = 1;
-	dcnt = 1;
 	while ((nread = read (0, inbuf, sizeof inbuf)) > 0) {
 		if (nread % 4) {
 			fprintf (stderr, "%s: trace input not word aligned\n",
@@ -285,8 +284,10 @@ main (int argc, char **argv)
 			iaddr += count*4;
 		}
 	}
-	if (optr != 0)
-		(void) write (1, obuf, optr);
+	if (optr != 0) {
+		int __attribute__((unused)) n = write (1, obuf, optr);
+                assert(n == optr);
+        }
 	if (nread < 0) {
 		perror (progname);
 		return 1;

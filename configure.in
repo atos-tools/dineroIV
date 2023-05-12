@@ -99,3 +99,4 @@ AC_ARG_WITH(libc-random,
 esac])
 
 AC_OUTPUT(Makefile)
+AC_OUTPUT(testing/Makefile)

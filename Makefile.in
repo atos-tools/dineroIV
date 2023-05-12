@@ -46,7 +46,8 @@
 #		CUSTOM_C=custom.c D4_SRC=$D4_SRC D4_LIB=$D4_SRC/libd4.a
 
 srcdir = @srcdir@
-VPATH = @srcdir@
+vpath %.c @srcdir@
+vpath %.h @srcdir@
 prefix = @prefix@
 
 SHELL = /bin/sh
@@ -75,15 +76,29 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 RANLIB = @RANLIB@
 
-all: libd4.a libd4.so dineroIV
+SUBDIRS=testing
+ALL_SUBDIRS=$(SUBDIRS:%=all-%)
+CHECK_SUBDIRS=$(SUBDIRS:%=check-%)
+CLEAN_SUBDIRS=$(SUBDIRS:%=clean-%)
+CLOBBER_SUBDIRS=$(SUBDIRS:%=clobber-%)
+DISTCLEAN_SUBDIRS=$(SUBDIRS:%=distclean-%)
 
-clean:
+all: libd4.a libd4.so dineroIV all-units all-testing
+
+all-units:
+
+check-units: all-units
+
+check: all
+	$(MAKE) check-units check-testing
+
+clean: clean-testing
 	rm -f $(LIB_OBJ_LIST) $(LIB_SO_OBJ_LIST) $(CMD_OBJ_LIST)
 
-clobber: clean
+clobber: clobber-testing clean
 	rm -f libd4.a libd4.so dineroIV d4custom
 
-distclean: clobber
+distclean: distclean-testing clobber
 	rm -f config.status config.cache config.log Makefile config.h core
 
 libd4.a: $(LIB_OBJ_LIST)
@@ -119,6 +134,21 @@ install-so: libd4.so
 install-inc: $(D4_HDR_LIST)
 	install -m 0755 -d $(prefix)/include/d4
 	install -m 0644 $^ $(prefix)/include/d4
+
+$(ALL_SUBDIRS): all-%:
+	$(MAKE) -C $* all
+
+$(CHECK_SUBDIRS): check-%:
+	$(MAKE) -C $* check
+
+$(CLEAN_SUBDIRS): clean-%:
+	-$(MAKE) -C $* clean
+
+$(CLOBBER_SUBDIRS): clobber-%:
+	-$(MAKE) -C $* clobber
+
+$(DISTCLEAN_SUBDIRS): distclean-%:
+	-$(MAKE) -C $* distclean
 
 ref.o ref.pic.o: d4.h config.h
 misc.o misc.pic.o: d4.h config.h
