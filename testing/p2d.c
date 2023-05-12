@@ -60,7 +60,12 @@
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
-#include "../d4.h"
+
+/* Ref to d4.h, we do not want to depend on d4 sources. */
+#define	D4XREAD		0
+#define D4XWRITE	1
+#define D4XINSTRN	2
+#define D4XMISC		3
 
 #if UINT_MAX < 0xffffffff
 #error "unsigned int is < 32 bits"
