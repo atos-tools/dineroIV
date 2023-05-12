@@ -58,6 +58,7 @@ CMD_OBJ_LIST = cmdmain.o cmdargs.o tracein.o \
 
 D4_SRC = $(srcdir)
 D4_LIB = $(D4_SRC)/libd4.a
+D4_HDR_LIST = cmdargs.h cmdd4.h config.h d4.h tracein.h
 CMD_SRC_LIST = $(D4_SRC)/cmdmain.c $(D4_SRC)/cmdargs.c $(D4_SRC)/tracein.c \
 	$(D4_SRC)/xdinfmt.c $(D4_SRC)/dinfmt.c $(D4_SRC)/binaryfmt.c \
 	$(D4_SRC)/pixie32fmt.c $(D4_SRC)/pixie64fmt.c
@@ -101,19 +102,23 @@ $(CUSTOM_NAME): $(CUSTOM_C) $(CMD_SRC_LIST) $(D4_SRC)/d4.h $(D4_SRC)/config.h
 	$(CC) $(CFLAGS) -DD4CUSTOM -o $(CUSTOM_NAME) \
 		$(CUSTOM_C) $(CMD_SRC_LIST) $(D4_LIB) $(LIBS)
 
-install: install-bin install-lib install-so
+install: install-bin install-lib install-so install-inc
 
-install-bin:
+install-bin: dineroIV
 	install -m 0755 -d $(prefix)/bin
-	install -m 0755 dineroIV $(prefix)/bin
+	install -m 0755 $^ $(prefix)/bin
 
-install-lib:
+install-lib: libd4.a
 	install -m 0755 -d $(prefix)/lib
-	install -m 0644 libd4.a $(prefix)/lib
+	install -m 0644  $^ $(prefix)/lib
 
-install-so:
+install-so: libd4.so
 	install -m 0755 -d $(prefix)/lib
-	install -m 0755 libd4.so $(prefix)/lib
+	install -m 0755 $^ $(prefix)/lib
+
+install-inc: $(D4_HDR_LIST)
+	install -m 0755 -d $(prefix)/include/d4
+	install -m 0644 $^ $(prefix)/include/d4
 
 ref.o ref.pic.o: d4.h config.h
 misc.o misc.pic.o: d4.h config.h
