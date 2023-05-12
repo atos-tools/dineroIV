@@ -88,6 +88,8 @@ d4new (d4cache *larger)
 		c->flags = D4F_MEM;
 		c->assoc = 1;	/* not used, but helps avoid compiler warnings */
 	}
+	c->cache_miss_handler = NULL;
+	c->cache_miss_handler_state = NULL;
 	c->link = d4_allcaches;
 	d4_allcaches = c;	/* d4customize depends on this LIFO order */
 	return c;
@@ -195,8 +197,7 @@ d4setup()
 			/* we don't try to check per-policy cache state */
 
 			/* it looks ok, now initialize */
-			c->numsets = (1<<c->lg2size) / ((1<<c->lg2blocksize) * c->assoc);
-
+			c->numsets = (1u<<(c->lg2size - c->lg2blocksize)) / c->assoc;
 			c->stack = calloc (c->numsets+((c->flags&D4F_CCC)!=0),
 					   sizeof(d4stackhead));
 			if (c->stack == NULL)
@@ -271,11 +272,13 @@ fail2:	r++;
 fail1:	r++;
 
 	for (cc = d4_allcaches;  cc != c;  cc = cc->link) {
-		/* don't bother trying to deallocate c->name */
-		free (c->stack[0].top);
-		free (c->stack);
-		c->stack = NULL;
-		c->numsets = 0;
+		/* don't bother trying to deallocate cc->name */
+		if (cc->stack) {
+			free (cc->stack[0].top);
+			free (cc->stack);
+			cc->stack = NULL;
+			cc->numsets = 0;
+		}
 	}
 	d4nnodes = 0;
 	return r;

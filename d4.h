@@ -211,9 +211,9 @@ typedef struct d4_cache_struct {
 	int lg2blocksize;	/* set by the user */
 	int lg2subblocksize;	/* set by the user */
 	int lg2size;		/* set by the user */
-	int assoc;		/* set by the user */
+	unsigned int assoc;	/* set by the user */
 
-	int numsets;		/* this one is derived, not set by the user */
+	unsigned int numsets;	/* this one is derived, not set by the user */
 
 	/*
 	 * Interconnection of caches
@@ -276,6 +276,9 @@ typedef struct d4_cache_struct {
 	double cap_blockmiss  [2 * D4NUMACCESSTYPES];
 	double conf_miss      [2 * D4NUMACCESSTYPES];	/* conflict misses */
 	double conf_blockmiss [2 * D4NUMACCESSTYPES];
+
+	void (*cache_miss_handler)();
+	void *cache_miss_handler_state;
 
 	double multiblock;
 	double bytes_read;
