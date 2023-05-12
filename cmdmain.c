@@ -1856,7 +1856,7 @@ customize_caches()
 		     getenv("D4_LIB")==NULL ? "; try setting D4_LIB" : "");
 
 	sprintf (cmdline, "make -s -f %s/Makefile %s CUSTOM_NAME=%s "
-		 "CUSTOM_C=%s D4_SRC=%s D4_LIB=%s\n",
+		 "CUSTOM_C=%s D4_SRC=%s D4_LIB=%s >/dev/null",
 		 psrc, customname, customname, fname, psrc, plib);
 	x = system (cmdline);
 

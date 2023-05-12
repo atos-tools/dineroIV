@@ -1,0 +1,49 @@
+# Makefile for Dinero IV testing stuff
+# Written by Jan Edler
+#
+# $Header: /home/edler/dinero/d4/testing/RCS/Makefile,v 1.6 1997/12/08 19:34:36 edler Exp $
+
+srcdir = @srcdir@
+vpath %.c @srcdir@
+vpath %.h @srcdir@
+prefix = @prefix@
+
+SHELL = /bin/sh
+@SET_MAKE@
+
+CC = @CC@
+DEBUG=@D4_DEBUG_FLAGS@
+CFLAGS = @CFLAGS@ $(DEBUG) -I. -I$(srcdir)
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+RANLIB = @RANLIB@
+
+ALL = p2d p2b
+OBJS = p2d.o p2b.o
+all: $(ALL)
+
+check: check-base check-custom
+
+check-base:
+	env PATH="..:$$PATH" $(srcdir)/testscript
+
+check-custom:
+	env D4_SRC=$(srcdir)/.. PATH="..:$$PATH" $(srcdir)/testscript -c
+
+p2d: p2d.o
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS) $(LIBS)
+
+p2b: p2b.o
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS) $(LIBS)
+
+$(OBJS): %.o: %.c
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+clean:
+	rm -f *.o core
+
+clobber: clean
+	rm -f $(ALL)
+
+distclean: clobber
+	rm -f Makefile
