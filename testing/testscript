@@ -117,7 +117,7 @@ done | while read tag parms; do
 		esac
 
 		if [ $oktodo = yes ]; then
-		 $p2d <$i | dineroIV $parms | sed 's/version [0-9]*$/version XXX/' |
+		 cat $i | $p2d | dineroIV $parms | sed 's/version [0-9]*$/version XXX/' |
 		  if [ $action = diff -a -s $i.good.$tag ]; then
 			echo ================== `date` ==== diff with $i.good.$tag for $parms
 			diff -b $i.good.$tag -

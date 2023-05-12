@@ -210,7 +210,7 @@ typedef struct d4_cache_struct {
 	 */
 	int lg2blocksize;	/* set by the user */
 	int lg2subblocksize;	/* set by the user */
-	int lg2size;		/* set by the user */
+	unsigned int size;	/* set by the user */
 	unsigned int assoc;	/* set by the user */
 
 	unsigned int numsets;	/* this one is derived, not set by the user */
@@ -319,8 +319,8 @@ typedef struct d4_cache_struct {
 #define D4_TRIGGER_bogus_lg2blocksize 0
 #define D4_CACHE_bogus_lg2subblocksize 0
 #define D4_TRIGGER_bogus_lg2subblocksize 0
-#define D4_CACHE_bogus_lg2size 0
-#define D4_TRIGGER_bogus_lg2size 0
+#define D4_CACHE_bogus_size 0
+#define D4_TRIGGER_bogus_size 0
 #define D4_CACHE_bogus_assoc 0
 #define D4_TRIGGER_bogus_assoc 0
 #define D4_CACHE_bogus_numsets 0

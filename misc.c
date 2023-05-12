@@ -139,7 +139,7 @@ d4setup()
 					problem |= 0x4;
 				if (d4_cust_vals[c->cacheid][2] != c->lg2subblocksize)
 					problem |= 0x8;
-				if (d4_cust_vals[c->cacheid][3] != c->lg2size)
+				if (d4_cust_vals[c->cacheid][3] != c->size)
 					problem |= 0x10;
 				if (d4_cust_vals[c->cacheid][4] != c->assoc)
 					problem |= 0x20;
@@ -181,32 +181,34 @@ d4setup()
 				goto fail2;
 			if (c->lg2subblocksize < 0 || c->lg2subblocksize > c->lg2blocksize)
 				goto fail3;
-			if (c->lg2size < c->lg2blocksize)
+			if (c->size < (1u<<c->lg2blocksize))
 				goto fail4;
 			if (c->assoc <= 0)
 				goto fail5;
-			if (c->replacementf == NULL || c->name_replacement == NULL)
+                        if (c->size % ((1u<<c->lg2blocksize) * c->assoc) != 0)
 				goto fail6;
-			if (c->prefetchf == NULL || c->name_prefetch == NULL)
+			if (c->replacementf == NULL || c->name_replacement == NULL)
 				goto fail7;
-			if (c->wallocf == NULL || c->name_walloc == NULL)
+			if (c->prefetchf == NULL || c->name_prefetch == NULL)
 				goto fail8;
-			if (c->wbackf == NULL || c->name_wback == NULL)
+			if (c->wallocf == NULL || c->name_walloc == NULL)
 				goto fail9;
+			if (c->wbackf == NULL || c->name_wback == NULL)
+				goto fail10;
 
 			/* we don't try to check per-policy cache state */
 
 			/* it looks ok, now initialize */
-			c->numsets = (1u<<(c->lg2size - c->lg2blocksize)) / c->assoc;
+			c->numsets = c->size / ((1u<<c->lg2blocksize) * c->assoc);
 			c->stack = calloc (c->numsets+((c->flags&D4F_CCC)!=0),
 					   sizeof(d4stackhead));
 			if (c->stack == NULL)
-				goto fail10;
+				goto fail11;
 			nnodes = c->numsets * (1 + c->assoc) +
 				 (c->numsets * c->assoc + 1) * ((c->flags&D4F_CCC)!=0);
 			nodes = calloc (nnodes, sizeof(d4stacknode));
 			if (nodes == NULL)
-				goto fail11;
+				goto fail12;
 			for (i = 0;  i < nnodes;  i++)
 				nodes[i].cachep = c;
 			ptr = nodes;
@@ -240,7 +242,7 @@ d4setup()
 		if (c->name == NULL) {
 			c->name = malloc (30);
 			if (c->name == NULL)
-				goto fail12;
+				goto fail13;
 			sprintf (c->name, "%s%d",
 				 (c->flags&D4F_MEM)!=0 ? "memory" : "cache", c->cacheid);
 		}
@@ -250,16 +252,17 @@ d4setup()
 #endif
 	d4stackhash.table = calloc (d4stackhash.size, sizeof(d4stacknode*));
 	if (d4stackhash.table == NULL)
-		goto fail13;
+		goto fail14;
 	return 0;
 
 	/* Try to undo stuff so (in principle) the user could try again */
-fail13: r++;
+fail14: r++;
 	/* don't bother trying to deallocate c->name */
-fail12:	r++;
+fail13:	r++;
 	free (nodes);
-fail11:	r++;
+fail12:	r++;
 	free (c->stack);
+fail11:	r++;
 fail10:	r++;
 fail9:	r++;
 fail8:	r++;
@@ -936,13 +939,13 @@ d4customize (FILE *f)
 		fprintf (f, "#define D4_CACHE_%d_lg2subblocksize %d\n"
 			    "#define D4_TRIGGER_%d_lg2subblocksize 1\n",
 			    cid, c->lg2subblocksize, cid);
-		fprintf (f, "#define D4_CACHE_%d_lg2size %d\n"
-			    "#define D4_TRIGGER_%d_lg2size 1\n",
-			    cid, c->lg2size, cid);
-		fprintf (f, "#define D4_CACHE_%d_assoc %d\n"
+		fprintf (f, "#define D4_CACHE_%d_size %u\n"
+			    "#define D4_TRIGGER_%d_size 1\n",
+			    cid, c->size, cid);
+		fprintf (f, "#define D4_CACHE_%d_assoc %u\n"
 			    "#define D4_TRIGGER_%d_assoc 1\n",
 			    cid, c->assoc, cid);
-		fprintf (f, "#define D4_CACHE_%d_numsets %d\n"
+		fprintf (f, "#define D4_CACHE_%d_numsets %u\n"
 			    "#define D4_TRIGGER_%d_numsets 1\n",
 			    cid, c->numsets, cid);
 		fprintf (f, "#define D4_CACHE_%d_prefetch_abortpercent %d\n"
@@ -1113,7 +1116,7 @@ d4customize (FILE *f)
 		fprintf (f, "	D4_CACHE_%d_flags,\n", cid);
 		fprintf (f, "	D4_CACHE_%d_lg2blocksize,\n", cid);
 		fprintf (f, "	D4_CACHE_%d_lg2subblocksize,\n", cid);
-		fprintf (f, "	D4_CACHE_%d_lg2size,\n", cid);
+		fprintf (f, "	D4_CACHE_%d_size,\n", cid);
 		fprintf (f, "	D4_CACHE_%d_assoc,\n", cid);
 		fprintf (f, "	D4_CACHE_%d_prefetch_abortpercent,\n", cid);
 		fprintf (f, "	D4_POLICY_%d_rep,\n", cid);
