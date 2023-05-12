@@ -28,7 +28,7 @@ check-base:
 	env PATH="..:$$PATH" $(srcdir)/testscript
 
 check-custom:
-	env D4_SRC=$(srcdir)/.. PATH="..:$$PATH" $(srcdir)/testscript -c
+	env D4_SRC=$(srcdir)/.. D4_BLD=.. PATH="..:$$PATH" $(srcdir)/testscript -c
 
 p2d: p2d.o
 	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS) $(LIBS)

@@ -46,8 +46,15 @@
 #		CUSTOM_C=custom.c D4_SRC=$D4_SRC D4_LIB=$D4_SRC/libd4.a
 
 srcdir = @srcdir@
-vpath %.c @srcdir@
-vpath %.h @srcdir@
+builddir = .
+
+D4_SRC = $(srcdir)
+D4_BLD = $(builddir)
+D4_LIB = $(D4_BLD)/libd4.a
+
+vpath %.c $(D4_SRC)
+vpath %.h $(D4_BLD):$(D4_SRC)
+
 prefix = @prefix@
 
 SHELL = /bin/sh
@@ -57,21 +64,21 @@ LIB_OBJ_LIST = ref.o misc.o
 CMD_OBJ_LIST = cmdmain.o cmdargs.o tracein.o \
 	xdinfmt.o dinfmt.o binaryfmt.o pixie32fmt.o pixie64fmt.o
 
-D4_SRC = $(srcdir)
-D4_LIB = $(D4_SRC)/libd4.a
 D4_HDR_LIST = cmdargs.h cmdd4.h config.h d4.h tracein.h
-CMD_SRC_LIST = $(D4_SRC)/cmdmain.c $(D4_SRC)/cmdargs.c $(D4_SRC)/tracein.c \
-	$(D4_SRC)/xdinfmt.c $(D4_SRC)/dinfmt.c $(D4_SRC)/binaryfmt.c \
-	$(D4_SRC)/pixie32fmt.c $(D4_SRC)/pixie64fmt.c
+CMD_SRC_LIST = cmdmain.c cmdargs.c tracein.c \
+	xdinfmt.c dinfmt.c binaryfmt.c \
+	pixie32fmt.c pixie64fmt.c
+
+CUSTOM_SRC_LIST = $(CMD_SRC_LIST:%=$(D4_SRC)/%)
 CUSTOM_NAME = d4custom # this is really just a placeholder
 
 LIB_SO_OBJ_LIST = ref.pic.o misc.pic.o cmdmain.pic.o cmdargs.pic.o tracein.pic.o \
 	xdinfmt.pic.o dinfmt.pic.o binaryfmt.pic.o pixie32fmt.pic.o pixie64fmt.pic.o
-D4_SO = $(D4_SRC)/libd4.so
+D4_SO = $(D4_BLD)/libd4.so
 
 CC = @CC@
 DEBUG=@D4_DEBUG_FLAGS@
-CFLAGS = @CFLAGS@ $(DEBUG) -I. -I$(D4_SRC)
+CFLAGS = @CFLAGS@ $(DEBUG) -I$(D4_BLD) -I$(D4_SRC)
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 RANLIB = @RANLIB@
@@ -113,9 +120,10 @@ dineroIV: $(CMD_OBJ_LIST) libd4.a d4.h
 	$(CC) $(CFLAGS) -o dineroIV $(CMD_OBJ_LIST) libd4.a $(LIBS)
 
 # don't include $(D4_LIB) on next line; a custom make should not rebuild it
-$(CUSTOM_NAME): $(CUSTOM_C) $(CMD_SRC_LIST) $(D4_SRC)/d4.h $(D4_SRC)/config.h
+$(CUSTOM_NAME): $(D4_HDR_LIST)
+$(CUSTOM_NAME): $(CUSTOM_C) $(CUSTOM_SRC_LIST)
 	$(CC) $(CFLAGS) -DD4CUSTOM -o $(CUSTOM_NAME) \
-		$(CUSTOM_C) $(CMD_SRC_LIST) $(D4_LIB) $(LIBS)
+		$(CUSTOM_C) $(CUSTOM_SRC_LIST) $(LDFLAGS) $(D4_LIB) $(LIBS)
 
 install: install-bin install-lib install-so install-inc
 
