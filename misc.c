@@ -147,7 +147,8 @@ d4setup()
 					problem |= 0x40;
 				if (d4_cust_vals[c->cacheid][6] != ((c->replacementf==d4rep_lru)?'l':
 							    (c->replacementf==d4rep_fifo)?'f':
-							    (c->replacementf==d4rep_random)?'r':0))
+							    (c->replacementf==d4rep_random)?'r':
+							    (c->replacementf==d4rep_plru)?'p':0))
 					problem |= 0x80;
 				if (d4_cust_vals[c->cacheid][7] != ((c->prefetchf==d4prefetch_none)?'n':
 							    (c->prefetchf==d4prefetch_always)?'a':
@@ -218,17 +219,21 @@ d4setup()
 				n = 1 + c->assoc * ((i < c->numsets) ? 1 : c->numsets);
 				c->stack[i].top = ptr;
 				c->stack[i].n = n;
+				c->stack[i].state = 0;
 				for (j = 1;  j < n-1;  j++) {
 					ptr[j].onstack = i;
 					ptr[j].down = &ptr[j+1];
 					ptr[j].up = &ptr[j-1];
+					ptr[j].id = j;
 				}
 				ptr[0].onstack = i;
 				ptr[0].down = &ptr[1];
 				ptr[0].up = &ptr[n-1];
+				ptr[0].id = 0;
 				ptr[n-1].onstack = i;
 				ptr[n-1].down = &ptr[0];
 				ptr[n-1].up = &ptr[n-2];
+				ptr[n-1].id = n-1;
 				ptr += n;
 			}
 			assert (ptr - nodes == nnodes);
@@ -311,6 +316,13 @@ d4init_rep_random (d4cache *c)
 {
 	c->replacementf = d4rep_random;
 	c->name_replacement = "random";
+}
+
+void
+d4init_rep_plru (d4cache *c)
+{
+	c->replacementf = d4rep_plru;
+	c->name_replacement = "PLRU";
 }
 
 void
@@ -993,6 +1005,12 @@ d4customize (FILE *f)
 				    "#define D4_POLICY_%d_rep 'r'\n"
 				    "#undef d4rep_random\n"
 				    "#define d4rep_random d4_%dreplacement\n",
+				    cid, cid, cid);
+		else if (c->replacementf == d4rep_plru)
+			fprintf (f, "#define D4_OPTS_%d_rep_plru 1\n"
+				    "#define D4_POLICY_%d_rep 'p'\n"
+				    "#undef d4rep_plru\n"
+				    "#define d4rep_plru d4_%dreplacement\n",
 				    cid, cid, cid);
 		else
 			fprintf (f, "#undef D4_TRIGGER_%d_replacementf\n"

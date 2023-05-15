@@ -49,7 +49,7 @@
  */
 
 #include "config.h"
-#define D4VERSION	"7"
+#define D4VERSION	"8"
 
 #ifndef D4CUSTOM
 #define D4CUSTOM 0
@@ -129,6 +129,7 @@ typedef struct d4_stacknode_struct {
 	unsigned int	referenced;	    /* bit for each subblock */
 	unsigned int	dirty;		    /* bit for each subblock */
 	int		onstack;	    /* which stack is node on? */
+	int		id;		    /* initial id on stack (top is 0), used by plru policy */
 	struct d4_cache_struct *cachep;	    /* which cache is this a part of */
 	struct d4_stacknode_struct *down;   /* ptr to less recently used node */
 	struct d4_stacknode_struct *up;     /* ptr to more recently used node */
@@ -149,6 +150,7 @@ typedef struct d4_stacknode_struct {
 typedef struct d4_stackhead_struct {
 	d4stacknode *top;	/* the "beginning" of the stack */
 	int n;			/* size of stack (== 1 + assoc) */
+	unsigned long int state; /* for replacement policies requiring a per stack state, used by plru */
 } d4stackhead;
 
 
@@ -248,6 +250,9 @@ typedef struct d4_cache_struct {
 	char		*name_prefetch;
 	char		*name_walloc;
 	char		*name_wback;
+
+	unsigned long int *plru_values;
+	unsigned long int *plru_masks;
 
 #ifdef D4CACHE_USERHOOK
 	D4CACHE_USERHOOK	/* allow additional stuff for user policies */
@@ -414,6 +419,7 @@ void		d4customize (FILE *);
 extern d4stacknode *d4rep_lru (d4cache *, int stacknum, d4memref, d4stacknode *ptr);
 extern d4stacknode *d4rep_fifo (d4cache *, int stacknum, d4memref, d4stacknode *ptr);
 extern d4stacknode *d4rep_random (d4cache *, int stacknum, d4memref, d4stacknode *ptr);
+extern d4stacknode *d4rep_plru (d4cache *, int stacknum, d4memref, d4stacknode *ptr);
 
 /* prefetch policies */
 extern d4pendstack *d4prefetch_none (d4cache *, d4memref, int miss, d4stacknode *);
@@ -439,6 +445,7 @@ extern int d4wback_impossible (d4cache *, d4memref, int, d4stacknode *, int); /*
 extern void d4init_rep_lru (d4cache *);
 extern void d4init_rep_fifo (d4cache *);
 extern void d4init_rep_random (d4cache *);
+extern void d4init_rep_plru (d4cache *);
 
 extern void d4init_prefetch_none (d4cache *);
 extern void d4init_prefetch_always (d4cache *, int, int);
