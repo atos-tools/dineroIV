@@ -275,10 +275,8 @@ d4stacknode *
 d4rep_plru (d4cache *c, int stacknum, d4memref m, d4stacknode *ptr)
 {
 	extern void d4_rep_plru_initialize(d4cache *c);
-	static int initialized;
-	if (!initialized) {
+	if (c->plru_values == NULL) {
 		d4_rep_plru_initialize(c);
-		initialized = 1;
 	}
 	if (ptr == NULL) {	/* misses */
 		ptr = c->stack[stacknum].top->up;
