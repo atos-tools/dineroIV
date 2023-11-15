@@ -115,3 +115,7 @@ i32d32b16u2a16u3a11D    -l1-dsize 32768 -l1-dbsize 64 -l1-dassoc 8 -l1-isize 327
 
 d32b64a8rlD		-l1-dsize 32k -l1-dbsize 64 -l1-dassoc 8 -l1-drepl l -informat D
 d32b64a8rpD		-l1-dsize 32k -l1-dbsize 64 -l1-dassoc 8 -l1-drepl p -informat D
+
+id8b16a2_u1b64a4lD	-l1-isize 2k -l1-dsize 2k -l1-ibsize 16 -l1-dbsize 16 -l1-iassoc 2 -l1-dassoc 2 -l1-irepl l -l1-drepl l -l1-ifetch a -l1-dfetch a -l1-dwalloc f -l1-dwback f -l2-usize 4k -l2-ubsize 64 -l2-usbsize 16 -l2-uassoc 4 -l2-urepl l -l2-ufetch s -l2-uwalloc a -l2-uwback a -informat D
+
+id8b16a2_u1b64a4pD	-l1-isize 2k -l1-dsize 2k -l1-ibsize 16 -l1-dbsize 16 -l1-iassoc 2 -l1-dassoc 2 -l1-irepl p -l1-drepl p -l1-ifetch a -l1-dfetch a -l1-dwalloc f -l1-dwback f -l2-usize 4k -l2-ubsize 64 -l2-usbsize 16 -l2-uassoc 4 -l2-urepl p -l2-ufetch s -l2-uwalloc a -l2-uwback a -informat D

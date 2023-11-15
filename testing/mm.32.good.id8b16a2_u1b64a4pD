@@ -1,0 +1,127 @@
+---Dinero IV cache simulator, version XXX
+---Written by Jan Edler and Mark D. Hill
+---Copyright (C) 1997 NEC Research Institute, Inc. and Mark D. Hill.
+---All rights reserved.
+---Copyright (C) 1985, 1989 Mark D. Hill.  All rights reserved.
+---See -copyright option for details
+
+---Summary of options (-help option gives usage information).
+
+-l2-usize 4096
+-l1-isize 2048
+-l1-dsize 2048
+-l2-ubsize 64
+-l1-ibsize 16
+-l1-dbsize 16
+-l2-usbsize 16
+-l1-isbsize 16
+-l1-dsbsize 16
+-l2-uassoc 4
+-l1-iassoc 2
+-l1-dassoc 2
+-l2-urepl p
+-l1-irepl p
+-l1-drepl p
+-l2-ufetch s
+-l1-ifetch a
+-l1-dfetch a
+-l2-upfdist 1
+-l1-ipfdist 1
+-l1-dpfdist 1
+-l2-uwalloc a
+-l1-dwalloc f
+-l2-uwback a
+-l1-dwback f
+-skipcount 0
+-flushcount 0
+-maxcount 0
+-stat-interval 0
+-informat D
+-on-trigger 0x0
+-off-trigger 0x0
+
+---Simulation begins.
+---Simulation complete.
+l1-icache
+ Metrics		      Total	      Instrn	       Data	       Read	      Write	       Misc
+ -----------------	      ------	      ------	      ------	      ------	      ------	      ------
+ Demand Fetches		      188971	      188971	           0	           0	           0	           0
+  Fraction of total	      1.0000	      1.0000	      0.0000	      0.0000	      0.0000	      0.0000
+ Prefetch Fetches	      188971	      188971	           0	           0	           0	           0
+  Fraction		      1.0000	      1.0000	      0.0000	      0.0000	      0.0000	      0.0000
+ Total Fetches		      377942	      377942	           0	           0	           0	           0
+  Fraction		      1.0000	      1.0000	      0.0000	      0.0000	      0.0000	      0.0000
+
+ Demand Misses		         160	         160	           0	           0	           0	           0
+  Demand miss rate	      0.0008	      0.0008	      0.0000	      0.0000	      0.0000	      0.0000
+ Prefetch Misses	         746	         746	           0	           0	           0	           0
+  PF miss rate		      0.0039	      0.0039	      0.0000	      0.0000	      0.0000	      0.0000
+ Total Misses		         906	         906	           0	           0	           0	           0
+  Total miss rate	      0.0024	      0.0024	      0.0000	      0.0000	      0.0000	      0.0000
+
+ Multi-block refs                 0
+ Bytes From Memory	       14496
+ ( / Demand Fetches)	      0.0767
+ Bytes To Memory	           0
+ ( / Demand Writes)	      0.0000
+ Total Bytes r/w Mem	       14496
+ ( / Demand Fetches)	      0.0767
+
+l1-dcache
+ Metrics		      Total	      Instrn	       Data	       Read	      Write	       Misc
+ -----------------	      ------	      ------	      ------	      ------	      ------	      ------
+ Demand Fetches		       76804	           0	       76804	       70370	        6426	           8
+  Fraction of total	      1.0000	      0.0000	      1.0000	      0.9162	      0.0837	      0.0001
+ Prefetch Fetches	       70370	           0	       70370	       70370	           0	           0
+  Fraction		      1.0000	      0.0000	      1.0000	      1.0000	      0.0000	      0.0000
+ Total Fetches		      147174	           0	      147174	      140740	        6426	           8
+  Fraction		      1.0000	      0.0000	      1.0000	      0.9563	      0.0437	      0.0001
+
+ Demand Misses		       15814	           0	       15814	       12592	        3219	           3
+  Demand miss rate	      0.2059	      0.0000	      0.2059	      0.1789	      0.5009	      0.3750
+ Prefetch Misses	       12090	           0	       12090	       12090	           0	           0
+  PF miss rate		      0.1718	      0.0000	      0.1718	      0.1718	      0.0000	      0.0000
+ Total Misses		       27904	           0	       27904	       24682	        3219	           3
+  Total miss rate	      0.1896	      0.0000	      0.1896	      0.1754	      0.5009	      0.3750
+
+ Multi-block refs                 0
+ Bytes From Memory	      394960
+ ( / Demand Fetches)	      5.1424
+ Bytes To Memory	       58543
+ ( / Demand Writes)	      9.1103
+ Total Bytes r/w Mem	      453503
+ ( / Demand Fetches)	      5.9047
+
+l2-ucache
+ Metrics		      Total	      Instrn	       Data	       Read	      Write	       Misc
+ -----------------	      ------	      ------	      ------	      ------	      ------	      ------
+ Demand Fetches		       30882	         906	       29976	       24682	        5291	           3
+  Fraction of total	      1.0000	      0.0293	      0.9707	      0.7992	      0.1713	      0.0001
+ Prefetch Fetches	       25588	         906	       24682	       24682	           0	           0
+  Fraction		      1.0000	      0.0354	      0.9646	      0.9646	      0.0000	      0.0000
+ Total Fetches		       56470	        1812	       54658	       49364	        5291	           3
+  Fraction		      1.0000	      0.0321	      0.9679	      0.8742	      0.0937	      0.0001
+
+ Demand Misses		       11018	         294	       10724	        7880	        2842	           2
+  Demand miss rate	      0.3568	      0.3245	      0.3578	      0.3193	      0.5371	      0.6667
+ Prefetch Misses	       17093	         674	       16419	       16419	           0	           0
+  PF miss rate		      0.6680	      0.7439	      0.6652	      0.6652	      0.0000	      0.0000
+ Total Misses		       28111	         968	       27143	       24299	        2842	           2
+  Total miss rate	      0.4978	      0.5342	      0.4966	      0.4922	      0.5371	      0.6667
+
+ Demand Block Misses	        8666	         280	        8386	        6814	        1570	           2
+  DB miss rate		      0.2806	      0.3091	      0.2798	      0.2761	      0.2967	      0.6667
+ Prefetch Block Misses	           0	           0	           0	           0	           0	           0
+  PFB miss rate		      0.0000	      0.0000	      0.0000	      0.0000	      0.0000	      0.0000
+ Total Block Misses	        8666	         280	        8386	        6814	        1570	           2
+  Tot blk miss rate	      0.1535	      0.1545	      0.1534	      0.1380	      0.2967	      0.6667
+
+ Multi-block refs                 0
+ Bytes From Memory	      421792
+ ( / Demand Fetches)	     13.6582
+ Bytes To Memory	       50688
+ ( / Demand Writes)	      9.5800
+ Total Bytes r/w Mem	      472480
+ ( / Demand Fetches)	     15.2995
+
+---Execution complete.
