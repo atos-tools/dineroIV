@@ -1,3 +1,6 @@
+version 8	26 Apr 2023
+	add pseudo replacement policy
+
 version 7	6 Feb 1998
 	added code to make -skipcount work
 

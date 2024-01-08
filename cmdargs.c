@@ -427,7 +427,8 @@ verify_options()
 			if (level_replacement[idu][lev]!=0 &&
 			    level_replacement[idu][lev]!='l' &&	/* LRU */
 			    level_replacement[idu][lev]!='f' &&	/* FIFO */
-			    level_replacement[idu][lev]!='r')	/* random */
+			    level_replacement[idu][lev]!='r' &&	/* random */
+			    level_replacement[idu][lev]!='p')	/* PLRU */
 				shorthelp ("level %d %ccache replacement policy unrecognized\n",
 					   lev+1, idu==0?'u':(idu==1?'i':'d'));
 		}
@@ -603,6 +604,12 @@ init_1cache (d4cache *c, int lev, int idu)
 	case 'l': c->replacementf = d4rep_lru; c->name_replacement = "LRU"; break;
 	case 'f': c->replacementf = d4rep_fifo; c->name_replacement = "FIFO"; break;
 	case 'r': c->replacementf = d4rep_random; c->name_replacement = "random"; break;
+	case 'p': c->replacementf = d4rep_plru; c->name_replacement = "PLRU";
+		if (c->assoc > 64)
+			die ("replacement policy 'p' does not support associativity > 64\n");
+		if (c->assoc == 0 || (c->assoc & (c->assoc - 1)) != 0)
+			die ("replacement policy 'p' require a power of 2 associativity\n");
+		break;
 	}
 
 	switch (level_fetch[idu][lev]) {

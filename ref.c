@@ -127,6 +127,8 @@ d4stacknode *d4rep_fifo (d4cache *c, int stacknum, d4memref m, d4stacknode *ptr)
 	{ d4dummy_crash("d4rep_fifo"); return NULL; }
 d4stacknode *d4rep_random (d4cache *c, int stacknum, d4memref m, d4stacknode *ptr)
 	{ d4dummy_crash("d4rep_random"); return NULL; }
+d4stacknode *d4rep_plru (d4cache *c, int stacknum, d4memref m, d4stacknode *ptr)
+	{ d4dummy_crash("d4rep_plru"); return NULL; }
 d4pendstack *d4prefetch_none (d4cache *c, d4memref m, int miss, d4stacknode *stackptr)
 	{ d4dummy_crash("d4prefetch_none"); return NULL; }
 d4pendstack *d4prefetch_always (d4cache *c, d4memref m, int miss, d4stacknode *stackptr)
@@ -262,6 +264,53 @@ d4rep_random (d4cache *c, int stacknum, d4memref m, d4stacknode *ptr)
 	return ptr;
 }
 #endif	/* !D4CUSTOM || D4_OPT (rep_random) */
+
+
+#if !D4CUSTOM || D4_OPT (rep_plru)
+/*
+ * Pseudo LRU replacement policy.
+ */
+D4_INLINE
+d4stacknode *
+d4rep_plru (d4cache *c, int stacknum, d4memref m, d4stacknode *ptr)
+{
+	extern void d4_rep_plru_initialize(d4cache *c);
+	if (c->plru_values == NULL) {
+		d4_rep_plru_initialize(c);
+	}
+	if (ptr == NULL) {	/* misses */
+		ptr = c->stack[stacknum].top->up;
+		assert (ptr->valid == 0);
+		/* find node to evict, invalid first, then by current PLRU state */
+		d4stacknode *evicted = NULL;
+		for (d4stacknode *p = ptr->up; p != ptr; p = p->up) {
+			if (p->valid == 0) {
+				evicted = p;
+			} else if (evicted != NULL) {
+				break;
+			} else if (c->plru_values[p->id] == (c->stack[stacknum].state & c->plru_masks[p->id])) {
+				evicted = p;
+				break;
+			}
+		}
+		assert(evicted != NULL);
+		int evicted_id = evicted->id;
+		evicted->id = ptr->id;
+		ptr->id = evicted_id;
+		ptr->blockaddr = D4ADDR2BLOCK (c, m.address);
+		if (c->stack[stacknum].n > D4HASH_THRESH)
+			d4hash (c, stacknum, ptr);
+		c->stack[stacknum].top = ptr;	/* quicker than d4movetotop */
+		d4movetobot (c, stacknum, evicted);
+	}
+	/* update tree state */
+	assert(ptr->id < c->assoc);
+	unsigned long int new_state = c->stack[stacknum].state & ~c->plru_masks[ptr->id];
+	new_state |= ~c->plru_values[ptr->id] & c->plru_masks[ptr->id];
+	c->stack[stacknum].state = new_state;
+	return ptr;
+}
+#endif	/* !D4CUSTOM || D4_OPT (rep_plru) */
 
 
 #if !D4CUSTOM || D4_OPT (prefetch_none)
